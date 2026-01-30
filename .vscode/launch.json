@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/output/x86_64/bin/ftest",
             // "args": ["help"],
-            "args": ["mt tcam_table"],
+            "args": ["mt", "tcam_table"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/output/x86_64/bin",  // ftest需要cd output/x86_64/bin目录下运行
             "environment": [],
