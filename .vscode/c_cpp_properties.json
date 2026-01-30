@@ -1,0 +1,43 @@
+{
+    "configurations": [
+        {
+            "name": "Linux-Ubuntu-GCC9.4",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/c++/9/**",
+                "/usr/include/x86_64-linux-gnu/c++/9/**",
+                "/usr/include/c++/9/backward/**",
+                "/usr/lib/gcc/x86_64-linux-gnu/9/include/**",
+                "/usr/local/include/**",
+                "/usr/include/x86_64-linux-gnu/**",
+                "/usr/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        },
+        {
+            "name": "Linux-Centos-GCC8.4",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/c++/8/**",
+                "/usr/include/c++/8/backward/**",
+                "/usr/local/include/**",
+                "/usr/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
+
+// 选择配置方法：
+// 1. 在 VS Code 中按 Ctrl+Shift+P
+// 2. 输入 "C/C++: Select a Configuration"
+// 3. 选择 "Linux-GCC9.4" 或 "Linux-GCC8.4"

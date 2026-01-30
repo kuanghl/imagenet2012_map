@@ -154,3 +154,8 @@ Inference array Processing: 100%|███████████████�
 (.venv) [root@localhost Resnet50_Pytorch_Infer]# cat ./result.json
 {"title": "Overall statistical evaluation", "value": [{"key": "Number of images", "value": "50000"}, {"key": "Number of classes", "value": "1000"}, {"key": "Top1 accuracy", "value": "76.14%"}, {"key": "Top2 accuracy", "value": "86.0%"}, {"key": "Top3 accuracy", "value": "89.75%"}, {"key": "Top4 accuracy", "value": "91.63%"}, {"key": "Top5 accuracy", "value": "92.87%"}]}
 ```
+
+#### .vscode用作为sempICP的vscode配置文件
+
+- 含编译任务和单步调试方法
+- 测试方法后续整合即可
