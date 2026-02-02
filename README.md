@@ -159,3 +159,18 @@ Inference array Processing: 100%|███████████████�
 
 - 含编译任务和单步调试方法
 - 测试方法后续整合即可
+
+####  centos源
+
+- centos源提供给/etc/yum.repos.d/目录下
+
+```sh 
+mv /etc/yum.repos.d/ yum.repos.d_backup
+mkdir /etc/yum.repos.d/
+cp centos/CentOS-Base.repo /etc/yum.repos.d/
+yum clean all     # 清除系统所有的yum缓存
+yum repolist
+yum grouplist
+yum makecache     # 生成yum缓存
+yum update
+```
