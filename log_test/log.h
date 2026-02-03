@@ -5,7 +5,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <string.h>
-#include <libgen.h>
 #include <time.h>
 
 #ifdef __cplusplus
@@ -74,6 +73,7 @@ void log_set_lock(log_lockcb fn, void *udata);
  * All logs below the given level will not be written to stderr. By default the level is LOG_TRACE, such that nothing is ignored.
  */
 void log_set_level(int level);
+int log_get_level(void);
 
 /**
  * Quiet-mode can be enabled by passing true to the log_set_quiet() function. 
@@ -115,6 +115,7 @@ void log_log(int level, const char *tag, const char *file, int line, const char 
  * log initialize
  */
 void log_init(int level, const char *log_file);
+void log_deinit(void);
 
 // #define DEFAULT         "\033["
 // #define BLACK           "\033[30"
@@ -166,22 +167,22 @@ void log_init(int level, const char *log_file);
 #endif // !log_level
 
 /* log file maxsize */
-#define LOG_FILE_MAXSIZE    (64 * 1024 * 1024 - 1024)  // 64MB - 1KB, 1KB for last log line
+#define LOG_FILE_MAXSIZE    (4096 - 1024) // (64 * 1024 * 1024 - 1024)  // 64MB - 1KB, 1KB for last log line
 
 /* loglevel as list */
-#define log_trace(...) log_log(LOG_TRACE, "tag", basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define log_debug(...) log_log(LOG_DEBUG, "tag", basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define log_info(...)  log_log(LOG_INFO,  "tag", basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define log_warn(...)  log_log(LOG_WARN,  "tag", basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define log_error(...) log_log(LOG_ERROR, "tag", basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define log_fatal(...) log_log(LOG_FATAL, "tag", basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
+// #define log_trace(...) log_log(LOG_TRACE, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_debug(...) log_log(LOG_DEBUG, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_info(...)  log_log(LOG_INFO,  "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_warn(...)  log_log(LOG_WARN,  "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_error(...) log_log(LOG_ERROR, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_fatal(...) log_log(LOG_FATAL, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define alog_trace(tag, ...)    log_log(LOG_TRACE, (tag), basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define alog_debug(tag, ...)    log_log(LOG_DEBUG, (tag), basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define alog_info(tag, ...)     log_log(LOG_INFO,  (tag), basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define alog_warn(tag, ...)     log_log(LOG_WARN,  (tag), basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define alog_error(tag, ...)    log_log(LOG_ERROR, (tag), basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
-#define alog_fatal(tag, ...)    log_log(LOG_FATAL, (tag), basename(__FILE__), __LINE__, __func__, __VA_ARGS__)
+#define alog_trace(tag, ...)    log_log(LOG_TRACE, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_debug(tag, ...)    log_log(LOG_DEBUG, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_info(tag, ...)     log_log(LOG_INFO,  (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_warn(tag, ...)     log_log(LOG_WARN,  (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_error(tag, ...)    log_log(LOG_ERROR, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_fatal(tag, ...)    log_log(LOG_FATAL, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
 
 #ifdef __cplusplus
 }
