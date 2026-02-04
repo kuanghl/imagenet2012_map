@@ -160,11 +160,12 @@ Inference array Processing: 100%|███████████████�
 - 含编译任务和单步调试方法
 - 测试方法后续整合即可
 
-####  centos源
+####  centos
 
 - centos源提供给/etc/yum.repos.d/目录下
 
 ```sh 
+# centos源更换(换源)
 mv /etc/yum.repos.d/ yum.repos.d_backup
 mkdir /etc/yum.repos.d/
 cp centos/CentOS-Base.repo /etc/yum.repos.d/
@@ -173,4 +174,25 @@ yum repolist
 yum grouplist
 yum makecache     # 生成yum缓存
 yum update
+```
+
+#### log_test
+
+```sh
+# 日志文件大小限制在LOG_FILE_MAXSIZE循环写入
+cd log_test && mkdir build
+cd build
+cmake ..
+make -j8
+ls & ./log_test
+```
+
+#### md_translator
+
+```sh
+# md文件翻译成中英文!!!注意需要校对
+# 参考来源：https://github.com/CrazyMayfly/Free-Markdown-Translator?tab=readme-ov-file
+# 更改md_translator/config.yaml文件中的配置
+# - src_filenames:目录下的文件名称，不带.md后缀
+MarkdownTranslator.exe -f HuLa_Embedded_Linux\001_Linux_Introduction
 ```
