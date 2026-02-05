@@ -49,16 +49,16 @@ static void stdout_callback(log_event *ev)
     buf[strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", ev->time)] = '\0';
 #if logcolor_en
     fprintf(
-        ev->udata, "[%s] %s%-5s\x1b[0m %-16s \x1b[90m%s:%d:%s():\x1b[0m ",
+        ev->udata, "[%s] %s%-5s\x1b[0m [%s] \x1b[90m%s:%d:%s():\x1b[0m ",
         buf, level_colors[ev->level], level_strings[ev->level], ev->tag,
         ev->file, ev->line, ev->func);
 #else
     fprintf(
-        ev->udata, "[%s] %-5s %-16s %s:%d:%s(): ",
+        ev->udata, "[%s] %-5s [%s] %s:%d:%s(): ",
         buf, level_strings[ev->level], ev->tag, ev->file, ev->line, ev->func);
 #endif
     vfprintf(ev->udata, ev->fmt, ev->ap);
-    // fprintf(ev->udata, "\n");
+    fprintf(ev->udata, "\n");
     fflush(ev->udata);
 }
 
@@ -70,10 +70,10 @@ static void file_callback(log_event *ev)
     // ev->udata is file handle
     buf[strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", ev->time)] = '\0';
     size = fprintf(
-        ev->udata, "[%s] %-5s %-16s %s:%d:%s(): ",
+        ev->udata, "[%s] %-5s [%s] %s:%d:%s(): ",
         buf, level_strings[ev->level], ev->tag, ev->file, ev->line, ev->func);
     size += vfprintf(ev->udata, ev->fmt, ev->ap);
-    // size += fprintf(ev->udata, "\n");
+    size += fprintf(ev->udata, "\n");
     fflush(ev->udata);
     
     // check log position 
