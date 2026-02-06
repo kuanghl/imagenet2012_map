@@ -25,9 +25,11 @@ static struct {
     bool once;                      /* whether log file is initialized for alog */
     FILE *fp;                       /* file pointer for alog_ctx for alog */
     pthread_mutex_t lock;           /* log lock for alog */
-    size_t pos;                     /* current file position for alog */ 
+    size_t pos;                     /* current file position for alog */
+    int level;                      /* log level for alog */
+    int cb_id;                      /* callback id for alog */ 
 } alog_ctx = {
-    false, NULL, PTHREAD_MUTEX_INITIALIZER, 0
+    false, NULL, PTHREAD_MUTEX_INITIALIZER, 0, ALOG_DEBUG, -1
 };
 
 static const char *level_strings[] = {
@@ -40,7 +42,7 @@ static const char *level_colors[] = {
 };
 #endif
 
-static void log_reset_file_pos(void);
+static inline void log_reset_file_pos(size_t pos);
 
 static void stdout_callback(log_event *ev) 
 {
@@ -77,11 +79,7 @@ static void file_callback(log_event *ev)
     fflush(ev->udata);
     
     // check log position 
-    alog_ctx.pos += size;
-    if (alog_ctx.pos >= LOG_FILE_MAXSIZE) {
-        log_reset_file_pos();
-        alog_ctx.pos = 0;
-    }
+    log_reset_file_pos(size);
 }
 
 
@@ -114,7 +112,7 @@ void log_set_lock(log_lockcb fn, void *udata)
 
 void log_set_level(int level) 
 {
-    if (level < LOG_FATAL || level > LOG_TRACE)
+    if (level < ALOG_FATAL || level > ALOG_TRACE)
         return;
     log_ctx.level = level;
 }
@@ -222,13 +220,16 @@ void log_lock(bool lock, void* udata)
 }
 
 // reset file pos for ringbuffer log
-void log_reset_file_pos(void)
+static inline void log_reset_file_pos(size_t pos)
 {
-    FILE *fp = NULL;
+    alog_ctx.pos += pos;
+    if (alog_ctx.pos < LOG_FILE_MAXSIZE) {
+        return;
+    }
 
-    if (log_ctx.cbs[0].fn) {
-        fp = (FILE *)log_ctx.cbs[0].udata;
-        fseek(fp, 0, SEEK_SET);
+    if (alog_ctx.fp) {
+        fseek(alog_ctx.fp, 0, SEEK_SET);
+        alog_ctx.pos = 0;
     }     
 }
 
@@ -242,8 +243,11 @@ void log_init(int level, const char *log_file)
         return;
     }
 
+    pthread_mutex_lock(&alog_ctx.lock);
+    
     // hps-main_%s_%d.log, (time %Y_%m_%d_%H_%M_%S), rand()
     log_set_level(level);
+    alog_ctx.level = level;
     if (log_file) {
         // log file exist check
         // slog_fp = fopen(log_file, "rb+"); 
@@ -251,11 +255,7 @@ void log_init(int level, const char *log_file)
         alog_ctx.fp = fopen(log_file, "wb+");
         if (alog_ctx.fp) {
             ret = log_add_fp(alog_ctx.fp, level);
-            if (ret < 0) {
-                printf("%s, log_add_fp failed\n", __func__);
-                fclose(alog_ctx.fp);
-                return;
-            }
+            alog_ctx.cb_id = ret;
         }
         else {
             printf("%s, open log file %s fail\n", __func__, log_file);
@@ -267,8 +267,10 @@ void log_init(int level, const char *log_file)
     log_set_lock(log_lock, &alog_ctx.lock);
     alog_ctx.once = true;
 
+    pthread_mutex_unlock(&alog_ctx.lock);
+
     // for new log start
-    alog_fatal("log", "===================== Log Initialized ====================\n");
+    alog_info("log", "===================== Log Initialized ====================\n");
 }
 
 void log_deinit(void)
@@ -277,9 +279,14 @@ void log_deinit(void)
         return;
     }
 
+    pthread_mutex_lock(&alog_ctx.lock);
+    
     if (alog_ctx.fp) {
+        log_remove_fp(alog_ctx.cb_id);
         fclose(alog_ctx.fp);
         alog_ctx.fp = NULL;
     }
     alog_ctx.once = false;
+
+    pthread_mutex_unlock(&alog_ctx.lock);
 }

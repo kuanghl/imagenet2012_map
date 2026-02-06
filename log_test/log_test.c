@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-    log_init(LOG_DEBUG, "./log_test.log");
+    log_init(ALOG_DEBUG, "./log_test.log");
 
     while (true)
     {

@@ -156,33 +156,33 @@ void log_deinit(void);
 #endif // !logcolor_en
 
 /* log level to compile */
-#define LOG_TRACE 5
-#define LOG_DEBUG 4
-#define LOG_INFO  3
-#define LOG_WARN  2
-#define LOG_ERROR 1
-#define LOG_FATAL 0
+#define ALOG_TRACE 5
+#define ALOG_DEBUG 4
+#define ALOG_INFO  3
+#define ALOG_WARN  2
+#define ALOG_ERROR 1
+#define ALOG_FATAL 0
 #ifndef log_level
-#define loglevel LOG_ERROR
+#define loglevel ALOG_ERROR
 #endif // !log_level
 
 /* log file maxsize */
 #define LOG_FILE_MAXSIZE    (4096 - 1024) // (64 * 1024 * 1024 - 1024)  // 64MB - 1KB, 1KB for last log line
 
 /* loglevel as list */
-// #define log_trace(...) log_log(LOG_TRACE, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
-// #define log_debug(...) log_log(LOG_DEBUG, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
-// #define log_info(...)  log_log(LOG_INFO,  "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
-// #define log_warn(...)  log_log(LOG_WARN,  "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
-// #define log_error(...) log_log(LOG_ERROR, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
-// #define log_fatal(...) log_log(LOG_FATAL, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_trace(...) log_log(ALOG_TRACE, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_debug(...) log_log(ALOG_DEBUG, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_info(...)  log_log(ALOG_INFO,  "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_warn(...)  log_log(ALOG_WARN,  "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_error(...) log_log(ALOG_ERROR, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
+// #define log_fatal(...) log_log(ALOG_FATAL, "tag", __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define alog_trace(tag, ...)    log_log(LOG_TRACE, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define alog_debug(tag, ...)    log_log(LOG_DEBUG, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define alog_info(tag, ...)     log_log(LOG_INFO,  (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define alog_warn(tag, ...)     log_log(LOG_WARN,  (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define alog_error(tag, ...)    log_log(LOG_ERROR, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define alog_fatal(tag, ...)    log_log(LOG_FATAL, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_trace(tag, ...)    log_log(ALOG_TRACE, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_debug(tag, ...)    log_log(ALOG_DEBUG, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_info(tag, ...)     log_log(ALOG_INFO,  (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_warn(tag, ...)     log_log(ALOG_WARN,  (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_error(tag, ...)    log_log(ALOG_ERROR, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define alog_fatal(tag, ...)    log_log(ALOG_FATAL, (tag), __FILE__, __LINE__, __func__, __VA_ARGS__)
 
 #ifdef __cplusplus
 }
