@@ -28,8 +28,9 @@ static struct {
     size_t pos;                     /* current file position for alog */
     int level;                      /* log level for alog */
     int cb_id;                      /* callback id for alog */ 
+    char name[256];                 /* log file name for alog */
 } alog_ctx = {
-    false, NULL, PTHREAD_MUTEX_INITIALIZER, 0, ALOG_DEBUG, -1
+    false, NULL, PTHREAD_MUTEX_INITIALIZER, 0, ALOG_DEBUG, -1, {0}
 };
 
 static const char *level_strings[] = {
@@ -230,7 +231,25 @@ static inline void log_reset_file_pos(size_t pos)
     if (alog_ctx.fp) {
         fseek(alog_ctx.fp, 0, SEEK_SET);
         alog_ctx.pos = 0;
-    }     
+    }
+    fclose(alog_ctx.fp);
+
+    // rename to old log file
+    char name[272] = {0};
+    snprintf(name, sizeof(name), "%s.old", alog_ctx.name);
+    remove(name);
+    rename(alog_ctx.name, name);
+    printf("remove old log file %s, rename current log file %s\n", name, alog_ctx.name);
+
+    // open new log file
+    alog_ctx.fp = fopen(alog_ctx.name, "ab+");
+    if (alog_ctx.fp) {
+        log_remove_fp(alog_ctx.cb_id);
+        alog_ctx.cb_id = log_add_fp(alog_ctx.fp, alog_ctx.level);
+    }
+    else {
+        printf("%s, error open log file %s fail\n", __func__, alog_ctx.name);
+    }
 }
 
 // used log name is hps-main.log for semptian
@@ -252,13 +271,21 @@ void log_init(int level, const char *log_file)
         // log file exist check
         // slog_fp = fopen(log_file, "rb+"); 
         // if (NULL == slog_fp) 
-        alog_ctx.fp = fopen(log_file, "wb+");
+        if(snprintf(alog_ctx.name, sizeof(alog_ctx.name), "%s", log_file) < 0) {
+            printf("%s, error log file name size %ld over %ld\n", 
+                __func__, strlen(log_file), sizeof(alog_ctx.name));
+            return; 
+        }
+
+        alog_ctx.fp = fopen(log_file, "ab+");
+        fseek(alog_ctx.fp, 0, SEEK_END);
+        alog_ctx.pos = ftell(alog_ctx.fp);
         if (alog_ctx.fp) {
             ret = log_add_fp(alog_ctx.fp, level);
             alog_ctx.cb_id = ret;
         }
         else {
-            printf("%s, open log file %s fail\n", __func__, log_file);
+            printf("%s, error open log file %s fail\n", __func__, log_file);
             return;
         }
     }
