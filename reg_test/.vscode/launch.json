@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ftest (gdb) 启动",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/reg_mcu_test",
+      // "program": "${workspaceFolder}/build/reg_hps_test",
+      "args": [
+        // "mt",
+        // "inlk_prbs",
+        // "-b 3"
+        // "tcam_table"
+        // "tcam_fru",
+        // "tcam_table"
+        // "-b 3"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "为 gdb 启用整齐打印",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "将反汇编风格设置为 Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        },
+        { "text": "set output-radix 16" }
+      ]
+    }
+  ]
+}
