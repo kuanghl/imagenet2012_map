@@ -42,7 +42,8 @@ typedef enum {
 #define REG_CTRL_RLEN_WOFFS     (0x3)                       /**< 0x3 MCU read |packet len(High 16bits)|transfer len(Low 16bits)| - uint32_t rlen*/
 #define REG_CTRL_STATE_WOFFS    (0x4)                       /**<> 0x4 state for reg read/write and packet 
                                 |                                 |w state(8bits)|resv(8bits)|r state(8bits)|resv(8bits)| - uint32_t state */
-#define REG_WDATA_WOFFS         (REG_CTRL_WOFFS + 8)
+
+#define REG_WDATA_WOFFS         (REG_CTRL_WOFFS + 8)        // |0 ~ 7 | 8 ~ 19 | 20 ~ 31|
 #define REG_RDATA_WOFFS         (REG_WDATA_WOFFS + 12)
 
 #define REG_WRITE_MAX_SIZE      (12 * 4)
