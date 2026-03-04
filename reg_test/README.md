@@ -75,3 +75,61 @@ typedef enum {
  * 封装接口以整包收发为基准即可   
  */
 ```
+
+### i2c(SMBus)工具
+
+1. BMC下的i2c-test工具
+
+```sh
+
+~ $ i2c-test
+i2c-test
+Usage: i2c-test <arguments>
+Arguments:
+
+*** I2C Functions ***
+        -b <bus number>: Set the bus number for this transaction.  Defaults to 0
+        -mm : Puts the device in Slave-Recieve mode and reponds to the message request
+        -mmd : Puts the device in Slave-Recieve mode and show the receive data
+        --sethost <addr>:       Set the host slave address
+        --gethost:      Get the current host slave address for the specified bus
+        --reset:        Reset the I2C controller
+        --sysreset:     Emergency Reset the I2C controller Module
+        --setspeed <speed>:     Set the bus speed
+                        (Supported speed modes are: Standard - 0x64(100Kbits/sec), Fast - 0x190(400Kbits/sec)
+        --scan:         Scan the I2C bus and show the slave addresses
+                        that respond
+        -s slave:       Communicate with the specified slave address in 7-bit format (in
+                        hexadecimal)
+                        Defaults to 0x5a
+        -d <bytes>:     Send any number of data bytes to the specified slave.
+                        Separate hexadecimal data bytes with spaces.  If this
+                        flag is used, it must be the last one on the
+                        command line.
+                        EG: i2c-test -m 1 -d 0x00 0x01 0x02 0x03
+        -rc count:      Read the specified number of bytes.  Defaults to 1
+        -r:             Just read from the specified address, don't do a write.
+        -w:             Just write to the specified address, don't do a read.
+        -m mode:        Send and receive in the specified mode:
+                        0: Write a data byte, then receive a data byte in
+                           separate operations
+                        1: Combined write and read using repeated start
+                        Default mode is 0
+        -f:             Repeat the specified test forever (stress test mode)
+        -sbd:           Don't display any output unless there is an error
+        --delay:        Specify the delay in milliseconds between tests in run forever mode
+        --getrecinfo:   Get the current recovery info
+```
+
+2. linux(ubuntu)下的i2c-tools
+
+```sh
+sudo apt-get install python-smbus
+sudo apt-get install i2c-tools
+
+https://github.com/groeck/i2c-tools
+https://linux.die.net/man/8/i2cdetect
+https://linux.die.net/man/8/i2cdump
+https://linux.die.net/man/8/i2cget
+https://linux.die.net/man/8/i2cset
+```
