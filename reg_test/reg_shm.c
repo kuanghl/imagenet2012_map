@@ -9,13 +9,12 @@
 #define REG_SHM_NAME        "/tmp"
 #define REG_SHM_NAME_ID     0
 #define REG_SHM_LOCK_SIZE   100
-#define REG_SHM_MAX_SIZE    (REG_SHM_LOCK_SIZE + 32 * 4)
+#define REG_SHM_MAX_SIZE    (REG_SHM_LOCK_SIZE + REG_MAX_SIZE)
 
-reg_shm_t *reg_shm_create(bool flag)
+reg_shm_t *reg_shm_create(void)
 {
     key_t key;
     reg_shm_t *shm = NULL;
-    int r = 0;
 
     shm = calloc(1, sizeof(reg_shm_t));
     if (shm == NULL) {
@@ -48,26 +47,22 @@ reg_shm_t *reg_shm_create(bool flag)
     shm->shm_start = shm->shm_addr + REG_SHM_LOCK_SIZE;
     memset(shm->shm_start, 0, (REG_SHM_MAX_SIZE - REG_SHM_LOCK_SIZE));
 
-    if (flag) {
-        r = pthread_mutexattr_init(&shm->shm_mutexattr);
-        r = pthread_mutexattr_setpshared(&shm->shm_mutexattr, PTHREAD_PROCESS_SHARED);
-        r = pthread_mutexattr_setrobust(&shm->shm_mutexattr, PTHREAD_MUTEX_ROBUST);
-        r = pthread_mutex_init(shm->shm_mutex, &shm->shm_mutexattr);
-    }
+    pthread_mutexattr_init(&shm->shm_mutexattr);
+    pthread_mutexattr_setpshared(&shm->shm_mutexattr, PTHREAD_PROCESS_SHARED);
+    pthread_mutexattr_setrobust(&shm->shm_mutexattr, PTHREAD_MUTEX_ROBUST);
+    pthread_mutex_init(shm->shm_mutex, &shm->shm_mutexattr);
 
     return shm;
 }
 
 void reg_shm_del(reg_shm_t *shm, bool flag)
 {
-    int r = 0;
-
     shmdt(shm->shm_addr);
     if (flag) {
         shmctl(shm->shm_id, IPC_RMID, NULL);
-        r = pthread_mutex_destroy(shm->shm_mutex);
-        r = pthread_mutexattr_destroy(&shm->shm_mutexattr);
     }
+    pthread_mutex_destroy(shm->shm_mutex);
+    pthread_mutexattr_destroy(&shm->shm_mutexattr);
 
     free(shm);
     shm = NULL;

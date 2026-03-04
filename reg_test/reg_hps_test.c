@@ -1,7 +1,7 @@
 #include <unistd.h>
 
 #include "reg_shm.h"
-#include "reg_packet.h"
+#include "reg_packet_slave.h"
 #include "log.h"
 
 int main(int argc, char *argv[])
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     uint32_t len = 1024;
     task_handle_t hd = { 0 };
 
-    reg_shm_t *shm = reg_shm_create(true);
+    reg_shm_t *shm = reg_shm_create();
     if (shm == NULL) {
         log_error("error\n");
         return -1;

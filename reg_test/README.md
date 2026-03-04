@@ -2,7 +2,8 @@
 
 1. 使用一块共享寄存器，申请互斥锁用于进程间互斥
 2. 每个寄存器只能一个word一个word的访问
-3. 开辟的内存如下：
+3. MCU作为master，HPS作为slave
+4. 开辟的内存如下：
 
 ```sh
 32WORD CPLD寄存器空间可用 -- 0x20
@@ -44,4 +45,33 @@ make -j8
 
 # 其中reg_mcu_test作为master，用于模拟主机访问一块共享寄存器空间，
 # 控制和读写从机reg_hps_test
+```
+
+### 优化方向
+
+```c
+// 读写缓冲区合并共用，分时复用即可，缓冲区增大一倍
+// 更改state为以下
+typedef enum {
+    REG_RWSTATE_RESV = 0x0, 
+    REG_WDONE = 0x1,
+    REG_WIDLE = 0x2,
+    REG_RDONE = 0x3,
+    REG_RIDLE = 0x4,
+    REG_RWDEFAULT_RESV = 0xffffffff, 
+} reg_rwstate_u;
+
+// 状态变化如下
+/**
+ *   +---loop1--+        +--loop2--+   
+ *   ↓          |        ↓         |     
+ * WDONE --> WIDLE --> RDONE --> RIDLE
+ *   ↑                             | 
+ *   +-----------------------------+
+ * 
+ * 其中loop1完成MCU to HPS的多次发送组成一个整包
+ * loop2完成HPS to MCU的多次发送组成一个整包
+ * 
+ * 封装接口以整包收发为基准即可   
+ */
 ```

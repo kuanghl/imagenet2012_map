@@ -15,7 +15,7 @@ static struct {
     bool quiet;                 /* printf in terminal disable */
     log_cb cbs[MAX_CALLBACKS];  /* array for callback function, such as file_callback/stdout_callback/... */
 } log_ctx = {  // log context to use
-    NULL, NULL, 0, false, {0}
+    NULL, NULL, 0, false, {{0}}
 };
 
 static const char *level_strings[] = {

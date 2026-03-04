@@ -170,6 +170,48 @@ void log_log(int level, const char *file, int line, const char *func, const char
                         strrchr((const char*)__FILE__, '/') ? strrchr((const char*)__FILE__, '/') + 1 : (const char*)__FILE__
 
 /*loglevel>=5*/
+#if 1
+#if loglevel>=LOG_TRACE
+#define log_trace(...) log_log(LOG_TRACE, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#else 
+#define log_trace(...)
+#endif
+
+/*loglevel>=4*/
+#if loglevel>=LOG_DEBUG
+#define log_debug(...) log_log(LOG_DEBUG, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#else
+#define log_debug(...) 
+#endif 
+
+/*loglevel>=3*/
+#if loglevel>=LOG_INFO
+#define log_info(...)  log_log(LOG_INFO, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#else
+#define log_info(...)
+#endif 
+
+/*loglevel>=2*/
+#if loglevel>=LOG_WARN
+#define log_warn(...)  log_log(LOG_WARN, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#else
+#define log_warn(...)
+#endif 
+
+/*loglevel>=1*/
+#if loglevel>=LOG_ERROR
+#define log_error(...) log_log(LOG_ERROR, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#else
+#define log_error(...) 
+#endif 
+
+/*loglevel>=0*/
+#if loglevel>=LOG_FATAL
+#define log_fatal(...) log_log(LOG_FATAL, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#else
+#define log_fatal(...)
+#endif 
+#else
 #if loglevel>=LOG_TRACE
 #define log_trace(...) log_log(LOG_TRACE, BASENAME_FILE(), __LINE__, __func__, __VA_ARGS__)
 #else 
@@ -185,14 +227,14 @@ void log_log(int level, const char *file, int line, const char *func, const char
 
 /*loglevel>=3*/
 #if loglevel>=LOG_INFO
-#define log_info(...)  log_log(LOG_INFO,  BASENAME_FILE(), __LINE__, __func__, __VA_ARGS__)
+#define log_info(...)  log_log(LOG_INFO, BASENAME_FILE(), __LINE__, __func__, __VA_ARGS__)
 #else
 #define log_info(...)
 #endif 
 
 /*loglevel>=2*/
 #if loglevel>=LOG_WARN
-#define log_warn(...)  log_log(LOG_WARN,  BASENAME_FILE(), __LINE__, __func__, __VA_ARGS__)
+#define log_warn(...)  log_log(LOG_WARN, BASENAME_FILE(), __LINE__, __func__, __VA_ARGS__)
 #else
 #define log_warn(...)
 #endif 
@@ -210,6 +252,7 @@ void log_log(int level, const char *file, int line, const char *func, const char
 #else
 #define log_fatal(...)
 #endif 
+#endif
 
 #ifdef __cplusplus
 }
