@@ -103,7 +103,7 @@ typedef enum {
     REG_CMD_INITED,
     REG_CMD_SYNC_TIME,
     REG_CMD_SYNC_ATC_TIME,
-    USB_CMD_ALL,
+    REG_CMD_ALL,
 } reg_cmd_u; 
 
 /************************************************************************

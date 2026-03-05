@@ -128,7 +128,15 @@ i2c-test -b 0 --scan（再次扫描完成看到更多的地址）
 i2c-test -b 0 -s 0x53 -r -rc 1 （读EEPROOM)
 i2c-test -b 0 -s 0x20 -r -rc 1 (CPLD 读取)
 i2c-test  -b 0 -s 0x20 -rc 4 -d 0x02 (CPLD寄存器地址0x02读取4个字节)
+i2c-test -b 0 -s 0x20 -w -d 0x60 0x00 0x00 0x00 0x13  (CPLD寄存器地址0x02写入4个字节即0x00000013)
 
+访问2Bytes寄存器地址
+访问带外EEPROM(0x53)方式，i2c-test会自增读写指针
+i2c-test -b 0 -s 0x53 -w -d 0x00 0x00     # 设置读指针到地址 0x0000
+i2c-test -b 0 -s 0x53 -r -rc 512          # 读取 512 字节数据
+i2c-test -b 0 -s 0x53 -w -d 0x00 0x00 0xfc 0x76   # 向带外EEPROM位置 0x0000 写0xfc76数据
+i2c-test -b 0 -s 0x53 -w -d 0x00 0x00     # 设置读指针到地址 0x0000
+i2c-test -b 0 -s 0x53 -r -rc 512          # 读取 512 字节数据
 
 ipmitool -I lanplus -H 127.0.0.1 -U admin -P admin raw 0x3a 0x30 0x00
 ipmitool -I lanplus -H 127.0.0.1 -U admin -P admin raw 0x3a 0x30 0x02 5 80
