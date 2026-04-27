@@ -118,7 +118,7 @@ typedef struct reg_shm_s
     int shm_id;
     void *shm_addr;
     void *shm_start;
-    pthread_mutexattr_t shm_mutexattr;
+    pthread_mutexattr_t attr;
     pthread_mutex_t *shm_mutex;
 } reg_shm_t;
 

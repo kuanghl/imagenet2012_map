@@ -68,8 +68,7 @@ struct timeval {
   suseconds_t  tv_usec;  /* Microseconds */
 };
 
-typedef struct aging_config_s
-{ 
+typedef struct aging_config_s { 
     uint8_t enable;             /**> Bit[0] 0 - disable 1 - enable; Bit[1:7] resv */
     uint8_t n_hpt;              /**> the number of high power test model */
     uint32_t sfp_time;          /**> the time of sfp aging test to run */
@@ -79,14 +78,12 @@ typedef struct aging_config_s
     uint32_t upload_time;       /**> Bit[0:15] for MES upload atc result time; Bit[16:31] for EEPROM upload atc result time */
 } aging_config_t;
 
-typedef struct ack_ncak_s
-{
+typedef struct ack_ncak_s {
     uint8_t ack;    /** Bit[0] 0 - ack; 1 - nack */
 } ack_nack_t;
 
 // !TODO
-typedef struct hps_info_s
-{
+typedef struct hps_info_s {
     uint8_t flow;           /**> software flow state */
     uint32_t hw_state;      /**> hardware link state */
     // FRU
@@ -97,8 +94,7 @@ typedef struct hps_info_s
 } hps_info_t;
 
 // !TODO
-typedef struct sfp_ret_s
-{
+typedef struct sfp_ret_s {
     uint8_t state;
     uint8_t err_flag;
     uint8_t port0;              /**> Bit */
@@ -107,8 +103,7 @@ typedef struct sfp_ret_s
 } sfp_ret_t;
 
 // !TODO
-typedef struct ddr_ret_s
-{
+typedef struct ddr_ret_s {
     uint8_t state;
     uint8_t err_flag;
     uint8_t ddr0;   /**> Bit */
@@ -120,27 +115,44 @@ typedef struct ddr_ret_s
 } ddr_ret_t;
 
 // !TODO
-typedef struct emmc_ret_s
-{
+typedef struct emmc_ret_s {
     uint8_t state;
     uint8_t err_flag;             
     uint32_t check;             /**> check data */
 } emmc_ret_t;
 
 // !TODO
-typedef struct tcam_ret_s
-{
+typedef struct tcam_ret_s {
     uint8_t state;              /**> tcam state */
     uint8_t err_flag;              
     uint32_t check;
 } tcam_ret_t;
 
 // !TODO
-typedef struct hpt_ret_s
-{
+typedef struct hpt_ret_s {
     uint8_t state;
     uint8_t err_flag;
     uint8_t n;                  /**> the number of high power model enable */
 } hpt_ret_t;
 
 
+// mutex sync with condition
+
+// // lock
+// pthread_mutex_t mutex;
+// pthread_cond_t cond;
+
+// // lock/unlock
+// pthread_mutex_lock(&aging_ctx->mutex);
+// pthread_mutex_unlock(&aging_ctx->mutex);
+
+// // cond signal and wait
+// pthread_cond_signal(&aging_ctx->cond);
+// pthread_mutex_lock(&aging_ctx->mutex);
+// while (true) {
+//     pthread_cond_wait(&aging_ctx->cond, &aging_ctx->mutex);
+//     // if all done 
+//     // add check state
+//     break;
+// }
+// pthread_mutex_unlock(&aging_ctx->mutex);

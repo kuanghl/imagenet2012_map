@@ -15,6 +15,7 @@ reg_shm_t *reg_shm_create(void)
 {
     key_t key;
     reg_shm_t *shm = NULL;
+    struct shmid_ds info;
 
     shm = calloc(1, sizeof(reg_shm_t));
     if (shm == NULL) {
@@ -47,10 +48,15 @@ reg_shm_t *reg_shm_create(void)
     shm->shm_start = shm->shm_addr + REG_SHM_LOCK_SIZE;
     memset(shm->shm_start, 0, (REG_SHM_MAX_SIZE - REG_SHM_LOCK_SIZE));
 
-    pthread_mutexattr_init(&shm->shm_mutexattr);
-    pthread_mutexattr_setpshared(&shm->shm_mutexattr, PTHREAD_PROCESS_SHARED);
-    pthread_mutexattr_setrobust(&shm->shm_mutexattr, PTHREAD_MUTEX_ROBUST);
-    pthread_mutex_init(shm->shm_mutex, &shm->shm_mutexattr);
+    pthread_mutexattr_init(&shm->attr);
+    pthread_mutexattr_setpshared(&shm->attr, PTHREAD_PROCESS_SHARED);
+    pthread_mutexattr_setrobust(&shm->attr, PTHREAD_MUTEX_ROBUST);
+    if (shmctl(shm->shm_id, IPC_STAT, &info) != -1) {
+        if (info.shm_nattch == 1) {
+            // log_debug("id=%d, shm_id=%d, shm_nattch=0x%x\n", id, shm->shm_id, info.shm_nattch);
+            pthread_mutex_init(shm->shm_mutex, &shm->attr);
+        }
+    }
 
     return shm;
 }
@@ -59,10 +65,10 @@ void reg_shm_del(reg_shm_t *shm, bool flag)
 {
     shmdt(shm->shm_addr);
     if (flag) {
+        pthread_mutex_destroy(shm->shm_mutex);
         shmctl(shm->shm_id, IPC_RMID, NULL);
     }
-    pthread_mutex_destroy(shm->shm_mutex);
-    pthread_mutexattr_destroy(&shm->shm_mutexattr);
+    pthread_mutexattr_destroy(&shm->attr);
 
     free(shm);
     shm = NULL;
@@ -71,6 +77,9 @@ void reg_shm_del(reg_shm_t *shm, bool flag)
 void reg_shm_write_aword(reg_shm_t *shm, uint32_t woffs, uint32_t word)
 {
     uint32_t *addr_temp = (uint32_t*)shm->shm_start + woffs;
+
+    // 添加分支操作
+    // AliFPGA3.0卡共享寄存器0x90~0x9F和0xF0~0xFF
 
     pthread_mutex_lock(shm->shm_mutex);
     *addr_temp = word;
@@ -81,6 +90,9 @@ uint32_t reg_shm_read_aword(reg_shm_t *shm, uint32_t woffs)
 {
     uint32_t *addr_temp = (uint32_t*)shm->shm_start + woffs;
     uint32_t temp = 0;
+
+    // 添加分支操作
+    // AliFPGA3.0卡共享寄存器0x90~0x9F和0xF0~0xFF
 
     pthread_mutex_lock(shm->shm_mutex);
     temp = *addr_temp;
