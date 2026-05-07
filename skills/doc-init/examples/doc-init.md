@@ -87,9 +87,9 @@ docs/src/
 
 | 参考文件（位于 skills 仓库 `doc-init/` 下） | 说明 |
 |------|------|
-| [docs/book.toml](../docs/book.toml) | 声明 `[preprocessor.mermaid]`（`command = "mdbook-mermaid"`）、`[output.html] additional-js = ["mermaid.min.js", "mermaid-init.js"]`，以及 `[build]`（如 `build-dir`、`create-missing`、`use-default-preprocessors`）。 |
-| [docs/mermaid-init.js](../docs/mermaid-init.js) | 页面加载后按 mdBook 亮/暗主题调用 `mermaid.initialize`；切换主题时通过刷新页面重绘图表。 |
-| [docs/mermaid.min.js](../docs/mermaid.min.js) | Mermaid 浏览器端运行时（vendor 大包）；可按需替换为与项目锁定的版本（如 [Mermaid Releases](https://github.com/mermaid-js/mermaid/releases)）。 |
+| [book.toml](./book.toml) | 声明 `[preprocessor.mermaid]`（`command = "mdbook-mermaid"`）、`[output.html] additional-js = ["mermaid.min.js", "mermaid-init.js"]`，以及 `[build]`（如 `build-dir`、`create-missing`、`use-default-preprocessors`）。 |
+| [mermaid-init.js](./mermaid-init.js) | 页面加载后按 mdBook 亮/暗主题调用 `mermaid.initialize`；切换主题时通过刷新页面重绘图表。 |
+| [mermaid.min.js](./mermaid.min.js) | Mermaid 浏览器端运行时（vendor 大包）；可按需替换为与项目锁定的版本（如 [Mermaid Releases](https://github.com/mermaid-js/mermaid/releases)）。 |
 
 **构建依赖（PATH 可用）：**
 
@@ -110,7 +110,7 @@ docs/src/
 ### 7. mdBook 与 Mermaid 约定（全项目文档基准）
 
 - **目录约定：** Markdown 正文放在 mdBook 的 `src/` 下（本示例为 `docs/src/`）；`book.toml` 与 `src/`、`mermaid.min.js`、`mermaid-init.js` 同属 `docs/`（见 **§5 参考文件**）。
-- **构建与 Mermaid：** **以 §5 中的 [book.toml](../docs/book.toml)、[mermaid-init.js](../docs/mermaid-init.js)、[mermaid.min.js](../docs/mermaid.min.js) 为默认参考**；CI 与本地均需安装 `mdbook` 与 `mdbook-mermaid`。若仅用编辑器预览 Markdown 而无 mdBook，须与团队约定「权威预览」方式，避免 CI 与本地不一致。
+- **构建与 Mermaid：** **以 §5 中的 [book.toml](./book.toml)、[mermaid-init.js](./mermaid-init.js)、[mermaid.min.js](./mermaid.min.js) 为默认参考**；CI 与本地均需安装 `mdbook` 与 `mdbook-mermaid`。若仅用编辑器预览 Markdown 而无 mdBook，须与团队约定「权威预览」方式，避免 CI 与本地不一致。
 - **Mermaid：** 在 Markdown 中使用 ` ```mermaid ` 围栏；常用类型：`flowchart`、`sequenceDiagram`、`stateDiagram-v2`、`classDiagram`、`erDiagram`、`pie`、`gantt`（按章节需要选用）。保持图表与当前代码/接口一致。
 - **与其他图示并存：** 下文「Skill 融合」中的 PlantUML、HTML、Vega 等与 Mermaid 可同时出现在书中；同一章节避免重复表达同一结构（选一主图 + 必要时附补充图）。
 
