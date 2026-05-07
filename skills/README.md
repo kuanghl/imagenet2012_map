@@ -39,12 +39,20 @@ Add skills to project knowledge or paste SKILL.md contents into the conversation
 
 Skills are automatically detected when placed in `.github/skills/` directory.
 
-**For Trae**
+**For Trae IDE**
 
 ```bash
 cp -r skills/<skill-name> ~/.agents/skills/
 cp -r skills/<skill-name> project_path/.agents/skills/
 ```
+
+**For Lingma vscode plugin**
+
+```bash
+cp -r skills/<skill-name> ~/.lingma/skills/
+cp -r skills/<skill-name> project_path/.lingma/skills/
+```
+
 ---
 
 ## 📚 Available Skills
