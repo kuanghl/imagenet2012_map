@@ -1,0 +1,19 @@
+[book]
+title = "sempICP 文档"
+authors = ["Semptian"]
+language = 'zh'
+
+[build]
+build-dir = "book"
+create-missing = false
+use-default-preprocessors = false
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+renderer = ["html"]
+
+[preprocessor.index]
+[preprocessor.links]
+
+[output.html]
+additional-js =["mermaid.min.js", "mermaid-init.js"]
