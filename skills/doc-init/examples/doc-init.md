@@ -11,6 +11,16 @@
 
 输入 `/doc-init` 或明确要求「初始化项目文档」。
 
+## 代码文件分析范围
+
+**完整扫描以下文件类型**，不跳过任何源码文件：
+- C/C++：`.c`、`.cpp`、`.h`、`.hpp`
+- Python：`.py`
+- Java：`.java`
+- Go：`.go`
+- TypeScript/JavaScript：`.ts`、`.js`
+- Shell：`.sh`、`.bash`
+
 ## 能力说明
 
 - 生成 `docs/src/` 下可扩展的 Wiki 结构（架构、原理、API、模块与子模块文档等）。
@@ -47,6 +57,11 @@ docs/src/
 ├── changelog.md
 ├── troubleshooting.md
 ├── glossary.md
+├── .review/
+│   ├── code-review-*.md
+│   ├── summary.md
+│   ├── results.json
+│   └── api-doc.md
 ├── modules/
 │   ├── core_api.md
 │   ├── script_api.md
@@ -85,11 +100,11 @@ docs/src/
 
 在 **目标项目** 的 `docs/`（或团队约定的 mdBook 根目录）下放置配置与脚本。**本 skill 在 skills 集合中的对照文件如下**，生成 Wiki 时应 **复制并按需改写** `book.toml` 字段（`title` / `authors` / `language`），**三者放在同一目录**（与 `src/` 并列），以便 `additional-js` 相对路径生效：
 
-| 参考文件（位于 skills 仓库 `doc-init/` 下） | 说明 |
+| 参考文件（位于 skills 仓库 `doc-init/assets/` 下） | 说明 |
 |------|------|
-| [book.toml](./book.toml) | 声明 `[preprocessor.mermaid]`（`command = "mdbook-mermaid"`）、`[output.html] additional-js = ["mermaid.min.js", "mermaid-init.js"]`，以及 `[build]`（如 `build-dir`、`create-missing`、`use-default-preprocessors`）。 |
-| [mermaid-init.js](./mermaid-init.js) | 页面加载后按 mdBook 亮/暗主题调用 `mermaid.initialize`；切换主题时通过刷新页面重绘图表。 |
-| [mermaid.min.js](./mermaid.min.js) | Mermaid 浏览器端运行时（vendor 大包）；可按需替换为与项目锁定的版本（如 [Mermaid Releases](https://github.com/mermaid-js/mermaid/releases)）。 |
+| [book.toml](../assets/book.toml) | 声明 `[preprocessor.mermaid]`（`command = "mdbook-mermaid"`）、`[output.html] additional-js = ["mermaid.min.js", "mermaid-init.js"]`，以及 `[build]`（如 `build-dir`、`create-missing`、`use-default-preprocessors`）。 |
+| [mermaid-init.js](../assets/mermaid-init.js) | 页面加载后按 mdBook 亮/暗主题调用 `mermaid.initialize`；切换主题时通过刷新页面重绘图表。 |
+| [mermaid.min.js](../assets/mermaid.min.js) | Mermaid 浏览器端运行时（vendor 大包）；可按需替换为与项目锁定的版本（如 [Mermaid Releases](https://github.com/mermaid-js/mermaid/releases)）。 |
 
 **构建依赖（PATH 可用）：**
 
@@ -110,7 +125,7 @@ docs/src/
 ### 7. mdBook 与 Mermaid 约定（全项目文档基准）
 
 - **目录约定：** Markdown 正文放在 mdBook 的 `src/` 下（本示例为 `docs/src/`）；`book.toml` 与 `src/`、`mermaid.min.js`、`mermaid-init.js` 同属 `docs/`（见 **§5 参考文件**）。
-- **构建与 Mermaid：** **以 §5 中的 [book.toml](./book.toml)、[mermaid-init.js](./mermaid-init.js)、[mermaid.min.js](./mermaid.min.js) 为默认参考**；CI 与本地均需安装 `mdbook` 与 `mdbook-mermaid`。若仅用编辑器预览 Markdown 而无 mdBook，须与团队约定「权威预览」方式，避免 CI 与本地不一致。
+- **构建与 Mermaid：** **以 §5 中的 [book.toml](../assets/book.toml)、[mermaid-init.js](../assets/mermaid-init.js)、[mermaid.min.js](../assets/mermaid.min.js) 为默认参考**；CI 与本地均需安装 `mdbook` 与 `mdbook-mermaid`。若仅用编辑器预览 Markdown 而无 mdBook，须与团队约定「权威预览」方式，避免 CI 与本地不一致。
 - **Mermaid：** 在 Markdown 中使用 ` ```mermaid ` 围栏；常用类型：`flowchart`、`sequenceDiagram`、`stateDiagram-v2`、`classDiagram`、`erDiagram`、`pie`、`gantt`（按章节需要选用）。保持图表与当前代码/接口一致。
 - **与其他图示并存：** 下文「Skill 融合」中的 PlantUML、HTML、Vega 等与 Mermaid 可同时出现在书中；同一章节避免重复表达同一结构（选一主图 + 必要时附补充图）。
 
@@ -143,3 +158,78 @@ docs/src/
 - 新增模块时复制子模块文档模板并更新 `SUMMARY.md`。
 - 可增加 `faq.md`、`contributing.md` 等；变更频繁时与 `changelog.md` 联动。
 - **Skill 融合：** 可在 `reference/` 下增加 `visual-conventions.md`（可选），说明本项目文档中 Mermaid 与各扩展图示的分工与渲染要求。
+
+---
+
+## doxygen 格式文档输出示例
+
+### 函数接口文档格式
+
+```markdown
+/**
+ * @brief 初始化用户认证模块
+ * 
+ * 初始化认证模块，加载配置并建立连接池。
+ * 
+ * @param config_path 配置文件路径
+ * @param timeout_ms 连接超时时间（毫秒）
+ * @return int 0 表示成功，非 0 表示错误码
+ * @note 需要提前调用 logger_init()
+ * @see auth_destroy()
+ */
+int auth_init(const char* config_path, int timeout_ms);
+```
+
+### 结构体文档格式
+
+```markdown
+/**
+ * @struct UserProfile
+ * @brief 用户配置文件结构体
+ * 
+ * 存储用户的基本配置信息。
+ */
+typedef struct {
+    /** @field username 用户名（最大 64 字符） */
+    char username[64];
+    /** @field email 用户邮箱地址 */
+    char email[128];
+    /** @field role 用户角色（admin/user/guest） */
+    enum UserRole role;
+    /** @field created_at 创建时间戳 */
+    time_t created_at;
+} UserProfile;
+```
+
+### 类文档格式
+
+```markdown
+/**
+ * @class DataProcessor
+ * @brief 数据处理器类
+ * 
+ * 提供数据清洗、转换和分析功能。
+ */
+class DataProcessor {
+public:
+    /**
+     * @brief 构造函数
+     * @param buffer_size 内部缓冲区大小
+     */
+    DataProcessor(size_t buffer_size);
+    
+    /**
+     * @brief 处理数据块
+     * @param input 输入数据指针
+     * @param length 数据长度
+     * @return bool 处理是否成功
+     */
+    bool process(const char* input, size_t length);
+};
+```
+
+### 输出位置
+
+- 函数接口文档：`api.md`
+- 结构体/类文档：`structures.md`
+- 模块级文档：`modules/<module_name>.md`

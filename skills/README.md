@@ -49,8 +49,8 @@ cp -r skills/<skill-name> project_path/.agents/skills/
 **For Lingma vscode plugin**
 
 ```bash
-cp -r skills/<skill-name> ~/.lingma/skills/
-cp -r skills/<skill-name> project_path/.lingma/skills/
+cp -r skills/<skill-name> ~/.agents/skills/
+cp -r skills/<skill-name> project_path/.agents/skills/
 ```
 
 ---

@@ -66,6 +66,12 @@ flowchart TD
 
 - **文件：** `src/user_input.c`（行 42–48）
 - **描述：** 使用无边界检查的 `sprintf`，超长输入可导致栈溢出。
+- **代码片段：** 
+```c
+// ...
+sprintf(buf, "%s", string_buf);
+// ...
+```
 - **建议：** 改用 `snprintf` 并限制写入长度。
 - **参考：** CWE-119、SEI CERT FIO36-C
 
@@ -75,6 +81,13 @@ flowchart TD
 
 - **文件：** `src/config.c`（行 123–126）
 - **描述：** `read_config_file` 可能返回 NULL，后续直接解引用。
+- **代码片段：** 
+```c
+// ...
+char *string_buf = read_config_file(name);
+sprintf(buf, "%s", string_buf);
+// ...
+```
 - **建议：** 判空并记录错误路径。
 
 ---

@@ -3,14 +3,24 @@
 ## 数据源与产出（原则）
 
 - **事实源：** **目标项目代码仓库** 中的源码（C/C++/Python/Shell 等）；审查逻辑与规则定义来自本 skill，分析对象始终是业务仓库。
-- **主产出：** **同一项目** 下的 **`.review/`**（报告、`results.json` 等），用于溯源与 CI。
+- **主产出：** **同一项目** 下的 **`docs/src/.review/`**（报告、`results.json` 等），用于溯源与 CI。
 - **可选产出：** **同一项目** 的 **Wiki/mdBook**（`docs/src/`），通过 **doc-update** 将结论写入既定章节；布局约定见 [doc-init/examples/doc-init.md](../../doc-init/examples/doc-init.md)。**入库章节与粒度**（摘要 vs 全量列表、quality/compliance/troubleshooting 分工）以 [code-review/SKILL.md](../../SKILL.md) 中的 **「Wiki 入库映射」** 为准。
 
 ## 触发方式
 输入 `/code-review` 或明确提出“对项目进行代码审查”、“Code Review”。
 
+## 代码文件分析范围
+
+**完整扫描以下文件类型**，不跳过任何源码文件：
+- C/C++：`.c`、`.cpp`、`.h`、`.hpp`
+- Python：`.py`
+- Java：`.java`
+- Go：`.go`
+- TypeScript/JavaScript：`.ts`、`.js`
+- Shell：`.sh`、`.bash`
+
 ## 能力描述
-基于 **CodeQL 标准查询套件**、**SEI CERT 编码标准**、**MISRA C/C++ 安全规范** 以及 **CWE 常见弱点枚举**，对 **目标项目仓库中** C/C++/Python/Shell 进行全面的自动化代码审查。由 AI 深度理解代码并执行多维规则匹配，从 **安全性**、**可靠性**、**性能**、**可维护性**、**合规性** 五大维度识别潜在缺陷、安全漏洞和代码异味，按 **PM 管理等级**（P0‑致命 / P1‑严重 / P2‑一般 / P3‑建议）分类输出到 **该项目** `.review/` 目录，并提供详细的**根本原因分析**与**可执行的修复建议**（含代码示例）。支持全量审查、增量审查、以及自定义规则配置。将结论写入 **Wiki/mdBook** 时遵循上文「数据源与产出」第三条，细节见 [doc-init/examples/doc-init.md](../../doc-init/examples/doc-init.md) §7–§8，并由 **doc-update** 执行写入。
+基于 **CodeQL 标准查询套件**、**SEI CERT 编码标准**、**MISRA C/C++ 安全规范** 以及 **CWE 常见弱点枚举**，对 **目标项目仓库中** C/C++/Python/Shell 进行全面的自动化代码审查。由 AI 深度理解代码并执行多维规则匹配，从 **安全性**、**可靠性**、**性能**、**可维护性**、**合规性** 五大维度识别潜在缺陷、安全漏洞和代码异味，按 **PM 管理等级**（P0‑致命 / P1‑严重 / P2‑一般 / P3‑建议）分类输出到 **该项目** `docs/src/.review/` 目录，并提供详细的**根本原因分析**与**可执行的修复建议**（含代码示例）。支持全量审查、增量审查、以及自定义规则配置。将结论写入 **Wiki/mdBook** 时遵循上文「数据源与产出」第三条，细节见 [doc-init/examples/doc-init.md](../../doc-init/examples/doc-init.md) §7–§8，并由 **doc-update** 执行写入。
 
 ---
 
@@ -186,7 +196,7 @@ AI 通过深度代码理解，执行以下分析：
 - **低**：可能存在，有可疑模式，建议审查
 
 ### 5. 生成专业审查报告
-在项目根目录下创建 `.review/` 目录，输出以下文件：
+在项目根目录下创建 `docs/src/.review/` 目录，输出以下文件：
 
 
 #### 5.1 详细报告 `code-review-YYYY-MM-DD-HHmmss.md`
@@ -266,3 +276,53 @@ AI 通过深度代码理解，执行以下分析：
 - P0 问题 > 0 → 阻塞
 - P1 问题 > 5 → 需评审
 - 安全评分 < 70 → 需改进
+
+---
+
+## doxygen 格式文档输出
+
+代码审查过程中，同时为每个代码文件生成 doxygen 格式的函数接口与结构体/类文档，便于与项目现有文档集成。
+
+### 输出内容
+
+| 文档类型 | 输出位置 | 包含内容 |
+|----------|----------|----------|
+| 函数接口文档 | `docs/src/.review/api-doc.md` | 函数签名、参数、返回值、注释 |
+| 结构体/类文档 | `docs/src/.review/struct-doc.md` | 类型定义、字段说明 |
+| 模块索引 | `docs/src/.review/module-index.md` | 文件与符号索引 |
+
+### 输出格式示例
+
+**函数接口：**
+```markdown
+/**
+ * @brief 初始化日志模块
+ * 
+ * @param config 配置结构体指针
+ * @return int 0=成功，非0=错误码
+ * @note 线程安全
+ */
+int logger_init(const LoggerConfig* config);
+```
+
+**结构体：**
+```markdown
+/**
+ * @struct LoggerConfig
+ * @brief 日志配置结构体
+ * @field level 日志级别
+ * @field output_path 输出路径
+ * @field max_file_size 最大文件大小(MB)
+ */
+typedef struct {
+    LogLevel level;
+    char output_path[256];
+    size_t max_file_size;
+} LoggerConfig;
+```
+
+### 与审查报告的关联
+
+- 每个问题报告关联到对应的函数/结构体文档
+- 在 `results.json` 中添加符号引用信息
+- 支持从问题定位到 API 文档的跳转链接

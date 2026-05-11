@@ -11,6 +11,16 @@
 
 输入 `/doc-update` 或要求「根据最新代码更新文档」。
 
+## 代码文件分析范围
+
+**完整扫描以下变更文件类型**，不跳过任何源码文件：
+- C/C++：`.c`、`.cpp`、`.h`、`.hpp`
+- Python：`.py`
+- Java：`.java`
+- Go：`.go`
+- TypeScript/JavaScript：`.ts`、`.js`
+- Shell：`.sh`、`.bash`
+
 ## 能力说明
 
 - 变更检测：Git diff / status，或无 Git 时对比 `docs/.doc-snapshot.json`。
@@ -101,3 +111,58 @@
 - [ ] **图示：** 受影响 Mermaid/扩展图已按代码更新；单章节内无重复矛盾的多张「主架构图」。
 - [ ] **运维：** `reference/`、`troubleshooting.md` 中与本次变更相关的条目已更新。
 - [ ] **快照：** `.doc-snapshot.json` 已刷新；可选 `mdbook build` 通过。
+- [ ] **doxygen 格式：** API 与类型文档保持 doxygen 格式规范（`@brief`、`@param`、`@return`、`@struct`、`@class`、`@field`）。
+- [ ] **审查报告路径：** code-review 产出写入 `docs/src/.review/` 目录，Wiki 仅保留摘要与追溯链接。
+
+---
+
+## doxygen 格式文档更新示例
+
+### 变更检测与更新策略
+
+当检测到以下代码变更时，自动更新对应 doxygen 格式文档：
+
+| 变更类型 | 更新位置 | doxygen 标签更新 |
+|----------|----------|-----------------|
+| 函数新增/修改 | `api.md` | `@brief`、`@param`、`@return`、`@note`、`@see` |
+| 结构体新增/修改 | `structures.md` | `@struct`、`@field`、`@brief` |
+| 类新增/修改 | `structures.md` | `@class`、`@brief`、成员函数文档 |
+| 枚举新增/修改 | `structures.md` | `@enum`、`@brief` |
+
+### 更新示例
+
+**原函数文档：**
+```markdown
+/**
+ * @brief 计算两个整数之和
+ * @param a 第一个整数
+ * @param b 第二个整数
+ * @return int 两数之和
+ */
+int add(int a, int b);
+```
+
+**代码变更后（增加错误处理）：**
+```markdown
+/**
+ * @brief 计算两个整数之和
+ * 
+ * 安全地计算两个整数之和，防止溢出。
+ * 
+ * @param a 第一个整数
+ * @param b 第二个整数
+ * @param[out] result 输出结果指针
+ * @return int 0 表示成功，-1 表示溢出
+ * @note 需要确保 result 不为 NULL
+ * @see safe_sub()
+ */
+int safe_add(int a, int b, int* result);
+```
+
+### 一致性检查
+
+更新 doxygen 格式文档时执行以下检查：
+- 函数参数名与代码一致
+- 返回值类型与代码一致
+- 结构体字段名与代码一致
+- 引用的其他符号存在
