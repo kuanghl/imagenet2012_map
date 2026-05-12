@@ -138,11 +138,18 @@ sudo apt-get install graphviz doxygen # 注意版本需要达到1.12.0以上，�
 doxygen -g
 doxygen Doxyfile
 
+# Warning handling, NO hide
+WARN_IF_UNDOCUMENTED   = NO
+WARN_NO_PARAMDOC       = NO
+WARN_IF_DOC_ERROR      = NO
+WARN_IF_INCOMPLETE_DOC = NO
+
 # 1. 安装工具到目标项目目录
 cd .agents/skills/doxygen
-python3 doxygen_tools.py install ../../../
+python3 doxygen_tools.py install ../../../ --name sempICP
 
 # 2. 进入项目目录后，仅构建文档
+mkdir docs
 python3 doxygen_tools.py build
 
 # 3. 构建并启动服务器（自动打开浏览器）

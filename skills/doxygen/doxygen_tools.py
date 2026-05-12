@@ -174,14 +174,31 @@ def serve_docs(port=3001, open_browser=False):
         server.shutdown()
 
 
-def install_files(dest_dir):
-    """Copy Doxyfile, .assets, and this script to dest_dir."""
+def install_files(dest_dir, doxyfile_name='Doxyfile'):
+    """
+    Copy Doxyfile, .assets, and this script to dest_dir.
+    
+    Args:
+        dest_dir: Destination directory
+        doxyfile_name: Name of the Doxyfile to install (default: 'Doxyfile').
+                      If specified as 'sempICP', will install 'Doxyfile.sempICP' as 'Doxyfile'.
+    """
     script_dir = Path(__file__).parent.resolve()
     dest_dir = Path(dest_dir).resolve()
     dest_dir.mkdir(parents=True, exist_ok=True)
     
+    # Determine which Doxyfile to use
+    if doxyfile_name == 'Doxyfile':
+        doxyfile_src = script_dir / 'Doxyfile'
+    else:
+        # Support custom Doxyfile names like 'Doxyfile.sempICP'
+        doxyfile_src = script_dir / f'Doxyfile.{doxyfile_name}'
+        if not doxyfile_src.exists():
+            print(f"Warning: {doxyfile_src} not found, falling back to Doxyfile", file=sys.stderr)
+            doxyfile_src = script_dir / 'Doxyfile'
+    
     items = [
-        (script_dir / "Doxyfile", dest_dir / "Doxyfile"),
+        (doxyfile_src, dest_dir / "Doxyfile"),
         (script_dir / ".assets", dest_dir / ".assets"),
         (script_dir / "doxygen_tools.py", dest_dir / "doxygen_tools.py"),
     ]
@@ -789,6 +806,9 @@ def main():
     # install
     install_parser = subparsers.add_parser("install", help="Install Doxyfile, .assets and this script to destination")
     install_parser.add_argument("dest_dir", help="Destination directory")
+    install_parser.add_argument("--name", type=str, default='Doxyfile', 
+                               help="Doxyfile name to install (default: 'Doxyfile'). "
+                                    "Use '--name sempICP' to install 'Doxyfile.sempICP' as 'Doxyfile'")
     
     # build
     subparsers.add_parser("build", help="Run doxygen using Doxyfile in current directory")
@@ -812,7 +832,7 @@ def main():
     args = parser.parse_args()
     
     if args.command == "install":
-        install_files(args.dest_dir)
+        install_files(args.dest_dir, doxyfile_name=args.name)
     elif args.command == "build":
         run_doxygen()
     elif args.command == "serve":
