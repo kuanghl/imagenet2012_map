@@ -13,6 +13,8 @@
 #### 使用.
 
 ```sh
+# 支持trae IDE, 在对话框输出skills指令
+# 在@Builder模式下skills的效果比SOLO好，可能是因为模型自信或幻觉的问题
 # 在trae的@Builder场景下
 /ai-context-generator   生上下文
 /doc-init 初始化项目文档
