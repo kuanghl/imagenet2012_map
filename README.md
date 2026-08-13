@@ -172,6 +172,7 @@ cp centos/CentOS-Base.repo /etc/yum.repos.d/
 yum clean all     # 清除系统所有的yum缓存
 yum repolist
 yum grouplist
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum makecache     # 生成yum缓存
 yum update
 ```
