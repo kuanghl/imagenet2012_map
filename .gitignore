@@ -2,3 +2,11 @@ build/
 bmc_test/
 iozone3_394.tar
 mdbook-demo/
+
+# repowise
+.repowise-workspace.yaml
+.repowise/
+.mcp.json
+.claude/
+.repowise-workspace/
+mcp.json
